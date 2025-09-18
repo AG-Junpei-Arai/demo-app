@@ -116,3 +116,38 @@ tasks.named("preBuild") {
         println("➡️ Running 'extendedClean' automatically before the build process starts...")
     }
 }
+
+/**
+ * 画像リソースの最適化
+ */
+
+// 1. 画像を最適化するカスタムタスクを定義
+tasks.register<Exec>("optimizeImages") {
+    group = "build"
+    description = "Optimizes PNG and JPEG resources."
+
+    // ■ 修正点: commandLineに関数を直接、個別に渡す
+    commandLine(
+        "bash",
+        "-c",
+        // シェルスクリプトは1つの文字列として渡す
+        """
+        find src/main/res -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) | while read file; do
+            if [[ ${'$'}file == *.png ]]; then
+                echo "Optimizing PNG: ${'$'}file"
+                pngquant --force --skip-if-larger --output "${'$'}file" -- "${'$'}file"
+            elif [[ ${'$'}file == *.jpg || ${'$'}file == *.jpeg ]]; then
+                echo "Optimizing JPEG: ${'$'}file"
+                guetzli --quality 85 --overwrite "${'$'}file"
+            fi
+        done
+        """
+    )
+}
+
+// 2. ビルドプロセスへの組み込み
+tasks.whenTaskAdded {
+    if (name.contains("merge") && name.contains("Resources")) {
+        dependsOn("optimizeImages")
+    }
+}
