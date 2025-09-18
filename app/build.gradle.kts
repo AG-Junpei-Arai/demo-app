@@ -8,6 +8,7 @@ plugins {
 println("✅ build.gradle.kts の設定を読み込みました。")
 
 android {
+
     namespace = "com.example.testapplication"
     compileSdk = 36
 
@@ -24,7 +25,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false // "is" プレフィックスが付きます
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -151,3 +153,4 @@ tasks.whenTaskAdded {
         dependsOn("optimizeImages")
     }
 }
+
