@@ -20,6 +20,7 @@ android {
         this.versionName = versionName
         this.versionCode = versionCode
 
+        println("Setting versionName to $versionName and versionCode to $versionCode")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,6 +32,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -128,7 +130,6 @@ tasks.register<Exec>("optimizeImages") {
     group = "build"
     description = "Optimizes PNG and JPEG resources."
 
-    // ■ 修正点: commandLineに関数を直接、個別に渡す
     commandLine(
         "bash",
         "-c",
@@ -153,4 +154,3 @@ tasks.whenTaskAdded {
         dependsOn("optimizeImages")
     }
 }
-
